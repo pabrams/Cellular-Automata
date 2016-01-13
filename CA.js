@@ -2,15 +2,12 @@ var cellSizeX = 10;
 var cellSizeY = 10;
 
 function loadPage(){
-		
-	drawGrid();
-	
+  drawGrid();
+  
 	// add click event listener to canvas element
 	document.getElementById("myCanvas").addEventListener('click', canvasClick, false);
-	
-	// add mouseMove event listener to canvas element
+  // add mouseMove event listener to canvas element
 	document.getElementById("myCanvas").addEventListener('mousemove', canvasMove, false);
-	
 };
 
 function getCtx(){
@@ -50,25 +47,22 @@ function fillCell(x, y, color){
 	
 };
 
-
 function canvasClick(event){
-	var ctx=getCtx();
-	var x = event.offsetX;
-	var y = event.offsetY;
+  var ctx=getCtx();
+  var x = event.offsetX;
+  var y = event.offsetY;
 	
-	var xstart = Math.floor(x / cellSizeX) * cellSizeX;
-	var ystart = Math.floor(y / cellSizeY) * cellSizeY;
+  var xstart = Math.floor(x / cellSizeX) * cellSizeX;
+  var ystart = Math.floor(y / cellSizeY) * cellSizeY;
 	
-	fillCell(xstart,ystart);
+  fillCell(xstart,ystart);
 };
 
 function canvasMove(event){
-	
 	var ctx=getCtx();
-	
 	var x = event.offsetX;
-	var y = event.offsetY;
+  var y = event.offsetY;
 	
-	
-	document.getElementById("mouseCoords").innerHTML = x + ',' + y;
+  document.getElementById("mouseCoords").innerHTML = x + ',' + y;
 };
+
