@@ -37,16 +37,20 @@ function drawGrid(){
   }
 };
 
+// fill the cell located at the coordinates x, y
 function fillCell(x, y, color){
   var ctx = getCtx();
-  
+     
   // set color to black if null
   if ((color === null) || (color === 'undefined')){
     color = "#000000";
   }
   
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, cellSizeX, cellSizeY);
+  
+  var xstart = Math.floor(x / cellSizeX) * cellSizeX;
+  var ystart = Math.floor(y / cellSizeY) * cellSizeY;
+  ctx.fillRect(xstart, ystart, cellSizeX, cellSizeY);
   
 };
 
@@ -56,10 +60,8 @@ function canvasClick(event){
   var x = event.offsetX;
   var y = event.offsetY;
   
-  var xstart = Math.floor(x / cellSizeX) * cellSizeX;
-  var ystart = Math.floor(y / cellSizeY) * cellSizeY;
   
-  fillCell(xstart,ystart);
+  fillCell(x,y);
 };
 
 function canvasMove(event){
