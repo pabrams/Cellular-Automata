@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Cellular Automata</title>
+<style>
+  .cellEmpty{
+      background-color: #ff0000; 
+      border: 1px solid Black;
+      position: absolute;
+    }
+    .cellFull{
+      background-color: #0000ff;  
+      border: 1px solid Black; 
+      position: absolute;
+    }
+</style>
+
 
 </head>
 
 <body onload="loadPage();">
 
-	<script src="CA.js"></script>
-	<canvas id="myCanvas" style="border:1px solid Blue" ></canvas>
+  <div id="gridOutline">
+  </div>
 
+	<script src="CA.js"></script>
 </body>
 
 </html> 
