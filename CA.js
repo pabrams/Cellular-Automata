@@ -1,7 +1,17 @@
 "use strict";
 
-// Create global namespace object
 var CA = CA || {};
+
+CA.cellSizeX = 10;
+CA.cellSizeY = 10;
+
+CA.gridOutline = document.getElementById("gridOutline");
+CA.gridOutline.setAttribute("style", "border:1px solid Blue;");
+CA.gridOutline.style.width = '80px';
+CA.gridOutline.style.height = '80px';
+
+CA.widthInCells = function(){ return CA.gridOutline.offsetWidth / CA.cellSizeX; };
+CA.heightInCells = function(){ return CA.gridOutline.offsetHeight / CA.cellSizeY; };
 
 // Function to help with Adding event listener to appropriate object
 // Got this idea from http://stackoverflow.com/questions/15356936/object-oriented-javascript-event-handling
@@ -9,107 +19,53 @@ CA.bind = function(scope, fn){
   return function() {
     return fn.apply(scope, arguments);
   }
-}
-
-// Create variable under CA scope to indicate whether mouse is down.
-CA.mouseIsDown = false;
-
-// mouseUp function
-CA.mouseUp = function(event){
-  CA.mouseIsDown = false;
 };
 
+// TODO: Create variable under CA scope to indicate whether mouse is down, and create functions toggle it.
+// CA.mouseIsDown = false;
+// CA.mouseUp = function(event){CA.mouseIsDown = false;};
+// CA.mouseDown = function(event){CA.mouseIsDown = true;};
+    
+// GridCell constructor
+var GridCell = function(x, y){
+  this.fill = "#ffffff";
+  this.div = document.createElement('div');
+  var divStyle = "left: " + (CA.gridOutline.offsetLeft + x*CA.cellSizeX) + "px; top: " + (CA.gridOutline.offsetTop + y*CA.cellSizeY) + "px; width:" + CA.cellSizeX + "px; " + " height:" + CA.cellSizeY + "px;";
+  this.div.setAttribute("style", divStyle);
+  this.div.className = 'cellEmpty';
+  this.div.id = 'cell_' + x + '_' + y;
   
-// todo: add grid cells
-// // GridCell constructor
-// var GridCell = function(){
-  // this.status = 0; // by default, a cell is empty.
-// };
+  this.mouseClick = function(){
+    if (this.div.className === 'cellEmpty'){
+      this.div.className = 'cellFull';
+    }else{
+      this.div.className = 'cellEmpty';
+    }
+  };
+  
+  this.div.addEventListener('click', CA.bind(this, this.mouseClick));
+};
 
 // Grid constructor
-var Grid = function(canvasId, width, height, cellSizeX, cellSizeY){
-
-  this.cellSizeX = cellSizeX;
-  this.cellSizeY = cellSizeY;
-  
-  this.canvas = document.getElementById(canvasId);
-  this.canvas.width = width;
-  this.canvas.height = height;
-  
-  this.context = this.canvas.getContext("2d");
-  
-  this.drawGrid = function(){
-    // draw vertical lines
-    for (var i=0; i<this.canvas.width / this.cellSizeX; i++){
-      this.context.beginPath();
-      this.context.moveTo(i*this.cellSizeX - 0.5,0);
-      this.context.lineTo(i*this.cellSizeX -0.5, this.canvas.height);
-      this.context.stroke();
-    }
-
-    // draw horizontal lines
-    for (var j=0; j<this.canvas.height / this.cellSizeY; j++){
-      this.context.beginPath();
-      this.context.moveTo(0,j*this.cellSizeY - 0.5);
-      this.context.lineTo(this.canvas.width, j*this.cellSizeY - 0.5);
-      this.context.stroke();
+var Grid = function(){  
+  this.drawGrid = function(){ 
+    for (var i=0;i<CA.widthInCells(); i++){
+      for (var j=0; j<CA.heightInCells(); j++){
+        var cell = new GridCell(i, j);
+        CA.gridOutline.appendChild(cell.div);  
+      }
     }
   };
-  
-  this.fillCell = function(x, y, color){  
-    // set color to black if null
-    if ((color === null) || (color === 'undefined')){
-      color = "#000000";
-    }
-    
-    this.context.fillStyle = color;
-
-    var xstart = Math.floor(x / this.cellSizeX) * this.cellSizeX;
-    var ystart = Math.floor(y / this.cellSizeY) * this.cellSizeY;
-    this.context.fillRect(xstart, ystart, this.cellSizeX, this.cellSizeY);
-  };
-  
-  
-  // needed for when user clicks without moving mouse
-  this.click = function(event){
-    var x = event.offsetX;
-    var y = event.offsetY;
-    this.fillCell(x,y);
-  };
-
-  this.mouseMove = function(event){
-    var x = event.offsetX;
-    var y = event.offsetY;
-    
-    // document.getElementById("mouseCoords").innerHTML = x + ',' + y;
-    
-    // if mouse is down, fill cells
-    if (CA.mouseIsDown){
-      this.fillCell(x, y);
-    }
-  };
-  
-  this.mouseDown = function(event){
-    CA.mouseIsDown = true;
-  };
-  
-  // add click event listener to canvas element
-  this.canvas.addEventListener('click', CA.bind(this, this.click), false);
-  
-  // add mouseDown event listener to canvas element
-  this.canvas.addEventListener('mousedown', CA.bind(this, this.mouseDown), false);
-  
-  // add mouseMove event listener to canvas element
-  this.canvas.addEventListener('mousemove', CA.bind(this, this.mouseMove), false);
-  
 };
 
 
 function loadPage(){
-  // add mouseup event listener to document
-  document.addEventListener('mouseup', CA.mouseUp, false);
+  // // TODO:  add mouse up/down event listeners to document
+  // document.addEventListener('mouseup', CA.mouseUp, false);
+  // document.addEventListener('mousedown', CA.mouseDown, false);
   
-  CA.grid = new Grid("myCanvas", 800, 800, 10, 10);
+  //create then draw grid
+  CA.grid = new Grid();
   CA.grid.drawGrid();
 };
 
