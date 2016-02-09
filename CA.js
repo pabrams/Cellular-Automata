@@ -1,71 +1,91 @@
 "use strict";
 
+// TODO:  the stuff before the declaration of CA should probably be cleaned up or reorganized.
+var num_Cells_X = 100;
+var num_Cells_Y = 80;
+var cell_Size = 10;
+
+
 var CA = CA || {};
+// returns width in pixels based on cell size and number of cells
+CA.getWidth = function(){
+  return CA.numCellsX * CA.cellSize;
+};
 
-CA.cellSizeX = 10;
-CA.cellSizeY = 10;
+// returns width in pixels based on cell size and number of cells
+CA.getHeight = function(){
+  return CA.numCellsY * CA.cellSize;
+};
 
-CA.gridOutline = document.getElementById("gridOutline");
-CA.gridOutline.setAttribute("style", "border:1px solid Blue;");
-CA.gridOutline.style.width = '80px';
-CA.gridOutline.style.height = '80px';
+CA.canvas = document.querySelector('canvas');
+CA.context = CA.canvas.getContext('2d');
 
-CA.widthInCells = function(){ return CA.gridOutline.offsetWidth / CA.cellSizeX; };
-CA.heightInCells = function(){ return CA.gridOutline.offsetHeight / CA.cellSizeY; };
+CA.canvas.style.background = 'Black';
+CA.context.fillStyle = '#f00'; 
 
-// Function to help with Adding event listener to appropriate object
-// Got this idea from http://stackoverflow.com/questions/15356936/object-oriented-javascript-event-handling
-CA.bind = function(scope, fn){
-  return function() {
-    return fn.apply(scope, arguments);
+CA.numCellsX = num_Cells_X;
+CA.numCellsY = num_Cells_Y;
+
+CA.cellSize = cell_Size;
+
+// set width/height of canvas
+CA.canvas.width = CA.getWidth();
+CA.canvas.height = CA.getHeight();
+
+
+CA.drawGrid = function(){
+  var w = CA.getWidth();
+  var h = CA.getHeight();
+  for(var i = .5; i < w || i < h; i += CA.cellSize) {
+    // draw horizontal lines
+    CA.context.moveTo( i, 0 );
+    CA.context.lineTo( i, h);
+    // draw vertical lines
+    CA.context.moveTo( 0, i );
+    CA.context.lineTo( w, i);
   }
+  CA.context.strokeStyle = 'hsla(0, 0%, 40%, .5)';
+  CA.context.stroke();
 };
 
-// TODO: Create variable under CA scope to indicate whether mouse is down, and create functions toggle it.
-// CA.mouseIsDown = false;
-// CA.mouseUp = function(event){CA.mouseIsDown = false;};
-// CA.mouseDown = function(event){CA.mouseIsDown = true;};
-    
-// GridCell constructor
-var GridCell = function(x, y){
-  this.fill = "#ffffff";
-  this.div = document.createElement('div');
-  var divStyle = "left: " + (CA.gridOutline.offsetLeft + x*CA.cellSizeX) + "px; top: " + (CA.gridOutline.offsetTop + y*CA.cellSizeY) + "px; width:" + CA.cellSizeX + "px; " + " height:" + CA.cellSizeY + "px;";
-  this.div.setAttribute("style", divStyle);
-  this.div.className = 'cellEmpty';
-  this.div.id = 'cell_' + x + '_' + y;
+CA.canvasClick = function(evt){
+  var eventX = evt.offsetX;
+  var eventY = evt.offsetY;
   
-  this.mouseClick = function(){
-    if (this.div.className === 'cellEmpty'){
-      this.div.className = 'cellFull';
-    }else{
-      this.div.className = 'cellEmpty';
-    }
-  };
+  // set fill style based on colour of clicked pixel
+  var imgData = CA.context.getImageData(eventX, eventY, 1, 1).data;
   
-  this.div.addEventListener('click', CA.bind(this, this.mouseClick));
+  if (imgData[0] == 0 && imgData[1] == 0 && imgData[2] == 0){
+    CA.context.fillStyle = "White";
+  }else{
+    CA.context.fillStyle = "Black";
+  }
+  
+  var x = Math.floor(eventX / CA.cellSize) * CA.cellSize + 1;
+  var y = Math.floor(eventY / CA.cellSize) * CA.cellSize + 1;
+  var w = CA.cellSize - 2;
+  var h = CA.cellSize - 2;   
+  CA.context.fillRect(x, y, w, h);
 };
 
-// Grid constructor
-var Grid = function(){  
-  this.drawGrid = function(){ 
-    for (var i=0;i<CA.widthInCells(); i++){
-      for (var j=0; j<CA.heightInCells(); j++){
-        var cell = new GridCell(i, j);
-        CA.gridOutline.appendChild(cell.div);  
-      }
-    }
-  };
+CA.runButtonClick = function(){
+  alert('Not yet implemented');
 };
-
+CA.stepButtonClick = function(){
+  alert('Not yet implemented');
+};
+CA.clearButtonClick = function(){
+  alert('Not yet implemented');
+};
 
 function loadPage(){
-  // // TODO:  add mouse up/down event listeners to document
-  // document.addEventListener('mouseup', CA.mouseUp, false);
-  // document.addEventListener('mousedown', CA.mouseDown, false);
+  // add event listeners
+  CA.canvas.addEventListener('click', CA.canvasClick, false);
+  document.getElementById("RunButton").addEventListener('click', CA.runButtonClick);
+  document.getElementById("StepButton").addEventListener('click', CA.stepButtonClick);
+  document.getElementById("ClearButton").addEventListener('click', CA.clearButtonClick);
   
   //create then draw grid
-  CA.grid = new Grid();
-  CA.grid.drawGrid();
+  CA.drawGrid();
 };
 
