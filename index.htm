@@ -3,25 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Cellular Automata</title>
-<style>
-  .cellEmpty{
-      background-color: White; 
-      border: 1px solid Black;
-      position: absolute;
-    }
-    .cellFull{
-      background-color: Black;  
-      border: 1px solid Black; 
-      position: absolute;
-    }
-</style>
-
 
 </head>
 
 <body onload="loadPage();">
 
   <div id="gridOutline">
+    <canvas id='canvas'></canvas>
+  </div>
+  <div id="buttonsDiv">
+    <button id="RunButton" name="RunButton">Run</button>
+    <button id="StepButton" name="StepButton">Step</button>
+    <button id="ClearButton" name="ClearButton">Clear</button>
   </div>
 
   <script src="CA.js"></script>
