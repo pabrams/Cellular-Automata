@@ -32,6 +32,10 @@ CA.cellSize = cell_Size;
 CA.canvas.width = CA.getWidth();
 CA.canvas.height = CA.getHeight();
 
+CA.clearGrid = function(){
+  CA.context.clearRect(0,0, CA.canvas.width, CA.canvas.height);
+  CA.drawGrid();
+};
 
 CA.drawGrid = function(){
   var w = CA.getWidth();
@@ -75,7 +79,7 @@ CA.stepButtonClick = function(){
   alert('Not yet implemented');
 };
 CA.clearButtonClick = function(){
-  alert('Not yet implemented');
+  CA.clearGrid();
 };
 
 function loadPage(){
