@@ -10,7 +10,7 @@ CA.getWidth = function(){
   return CA.numCellsX * CA.cellSize;
 };
 
-// returns width in pixels based on cell size and number of cells
+// returns height in pixels based on cell size and number of cells
 CA.getHeight = function(){
   return CA.numCellsY * CA.cellSize;
 };
